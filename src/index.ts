@@ -1,25 +1,26 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import "dotenv/config"
-import { logger } from 'hono/logger'
-import { csrf } from 'hono/csrf'
-import { trimTrailingSlash } from 'hono/trailing-slash'
-import { HTTPException } from 'hono/http-exception'
+import "dotenv/config";
+import { logger } from 'hono/logger';
+import { csrf } from 'hono/csrf';
+import { trimTrailingSlash } from 'hono/trailing-slash';
+import { HTTPException } from 'hono/http-exception';
 import { rateLimiter } from "hono-rate-limiter";
 import { jwt } from 'hono/jwt';
 import { readFile } from 'fs/promises';
-import { client } from './drizzle/db'  // Import the client
+import { client } from './drizzle/db';  // Import the client
 
-import { userRouter } from './users/user.router'
-import { authRouter } from './auth/auth.router'
-import { testimonialRouter } from './testimonials/testimonial.router'
-import { updateRouter } from './updates/update.router'
-import { clientRouter } from './posible clients/posibleclients.router'
-import { serviceRouter } from './offerdservices/services.router'
-import { productRouter } from './products/product.router';
+import { userRouter } from './users/user.router';
+import { authRouter } from './auth/auth.router';
+import { testimonialRouter } from './testimonials/testimonial.router';
+import { updateRouter } from './updates/update.router';
+import { productRouter } from './products/products.router';
+//import { clientRouter } from './posible clients/posibleclients.router';
+//import { serviceRouter } from './offerdservices/services.router';
+//import { productRouter } from './products/product.router';
 
-const app = new Hono()
+const app = new Hono();
 
 // change on the middle ware
 
@@ -31,7 +32,6 @@ app.use('/*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
-
 
 // rate limiter
 const limiter = rateLimiter({
@@ -52,10 +52,10 @@ app.get('/', async (c) => {
 });
 
 // middlewares
-app.use(logger())
-app.use(csrf())
-app.use(trimTrailingSlash())
-app.use(limiter)
+app.use(logger());
+app.use(csrf());
+app.use(trimTrailingSlash());
+app.use(limiter);
 
 // JWT Middleware for authentication
 app.use('/api/*', jwt({
@@ -63,18 +63,18 @@ app.use('/api/*', jwt({
 }));
 
 // Routes
-app.route("/", userRouter)        // User management
-app.route("/", testimonialRouter) // Testimonials management
-app.route("/", updateRouter)      // Updates management
-app.route("/auth", authRouter)    // Authentication
-app.route("/", clientRouter)      // Posible clients
-app.route("/", serviceRouter)     // Offered services
-app.route("/", productRouter)     // Products
+app.route("/", userRouter);        // User management
+app.route("/", testimonialRouter); // Testimonials management
+app.route("/", updateRouter);      // Updates management
+app.route("/auth", authRouter);    // Authentication
+//app.route("/", clientRouter);      // Posible clients
+//app.route("/", serviceRouter);     // Offered services
+app.route("/", productRouter);     // Products
 
 // Default route for unmatched paths
 app.all('*', (c) => {
-  return c.text('Page not found', 404)
-})
+  return c.text('Page not found', 404);
+});
 
 // Graceful shutdown
 const shutdown = async () => {
@@ -93,12 +93,18 @@ process.on('uncaughtException', async (error) => {
     process.exit(1);
 });
 
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+if (isNaN(PORT) || PORT < 0 || PORT >= 65536) {
+    throw new RangeError(`Invalid port number: ${PORT}`);
+}
+
 try {
   serve({
     fetch: app.fetch,
-    port: Number(process.env.PORT)
+    port: PORT
   });
-  console.log(`Server is running on port ${process.env.PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 } catch (err: unknown) {
   console.error('Server error:', err);
   process.exit(1);
