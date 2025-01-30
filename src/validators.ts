@@ -8,6 +8,15 @@ export const userSchema = z.object({
     role: z.enum(["admin", "user"]).default("user"),
 });
 
+ // Auth schemas
+export const loginUserSchema = z.object({
+    email: z.string().email(),
+    password: z.string()
+});
+
+
+
+
 // Products schema
 export const productSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),

@@ -15,6 +15,16 @@ export const UsersTable = pgTable('users', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
+// Auth Table
+export const AuthTable = pgTable('auth', {
+  authid: serial('authid').primaryKey(),
+  userid: integer('user_id').references(() => UsersTable.userid, { onDelete: "cascade" }),
+  password: varchar('password', { length: 255 }).notNull(),
+  role: roleEnum('role').default('user'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+
 // Products Table
 export const ProductsTable = pgTable('products', {
   productid: serial('productid').primaryKey(),
