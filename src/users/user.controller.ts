@@ -1,88 +1,79 @@
-import { Context } from "hono";
-import { getUserService, getUsersService, createUserService, updateUserService, deleteUserService } from "./user.service";
+import { Context } from 'hono';
+import { createUserService, getUsersService, getUserByIdService, updateUserService, deleteUserService } from './user.service';
 
-//get all users
-export const getUsers = async (c: Context) => {
-    const users = await getUsersService();
-    return c.json(users);
-}
-
-//get user by id
-export const getUser = async (c: Context) => {
-    const id = parseInt(c.req.param("id"));
-    if (isNaN(id)) return c.text("Invalid ID", 400);
-
-    const user = await getUserService(id);
-    if (user == undefined) {
-        return c.text("User not found", 404);
-    }
-    return c.json(user, 200);
-}
-
-//create a user
-export const createUser = async (c: Context) => {
+// Create a new user
+export const createUserController = async (c: Context) => {
     try {
         const user = await c.req.json();
-        const createdUser = await createUserService(user);
-        if (!createdUser) return c.text("User not created", 404);
-        return c.json({ msg: createdUser }, 201);
+        const currentUserRole = c.req.header('role'); // Assuming the role is passed in the header
+        if (currentUserRole !== 'admin') {
+            return c.json({ error: "Only admins can create new users" }, 403);
+        }
+        const message = await createUserService(user, currentUserRole);
+        return c.json({ message }, 201);
     } catch (error: any) {
-        return c.json({ error: error?.message }, 400);
+        console.error("Error creating user:", error);
+        return c.json({ error: error.message }, 400);
     }
-}
+};
 
-
-
-// //create a user
-// export const createUser = async (c: Context) => {
-//     try {
-//         const user = await c.req.json();
-//         const createdUser = await createUserService(user);
-//         //
-//         if (!createdUser) return c.text("User not created", 404);
-//         return c.json({ msg: createdUser }, 201);
-
-//     } catch (error: any) {
-//         return c.json({ error: error?.message }, 400)
-//     }
-// }
-
-
-//update a user
-export const updateUser = async (c: Context) => {
-    const id = parseInt(c.req.param("id"));
-    if (isNaN(id)) return c.text("Invalid ID", 400);
-
-    const user = await c.req.json();
+// Get all users
+export const getUsersController = async (c: Context) => {
     try {
-        // search for the user
-        const searchedUser = await getUserService(id);
-        if (searchedUser == undefined) return c.text("User not found", 404);
-        // get the data and update it
-        const res = await updateUserService(id, user);
-        // return a success message
-        if (!res) return c.text("User not updated", 404);
-
-        return c.json({ msg: res }, 201);
+        const users = await getUsersService();
+        return c.json(users, 200);
     } catch (error: any) {
-        return c.json({ error: error?.message }, 400)
+        console.error("Error getting users:", error);
+        return c.json({ error: error.message }, 500);
     }
-}
-//delete a user
-export const deleteUser = async (c: Context) => {
-    const id = Number(c.req.param("id"));
-    if (isNaN(id)) return c.text("Invalid ID", 400);
+};
 
+// Get a user by ID
+export const getUserByIdController = async (c: Context) => {
     try {
-        //search for the user
-        const user = await getUserService(id);
-        if (user == undefined) return c.text("User not found", 404);
-        //deleting the user
-        const res = await deleteUserService(id);
-        if (!res) return c.text("User not deleted", 404);
+        const userId = parseInt(c.req.param('id'), 10);
+        if (isNaN(userId)) return c.text("Invalid ID", 400);
 
-        return c.json({ msg: res }, 201);
+        const user = await getUserByIdService(userId);
+        if (!user) {
+            return c.text("User not found", 404);
+        }
+        return c.json(user, 200);
     } catch (error: any) {
-        return c.json({ error: error?.message }, 400)
+        console.error("Error getting user:", error);
+        return c.json({ error: error.message }, 500);
     }
-}
+};
+
+// Update a user by ID
+export const updateUserController = async (c: Context) => {
+    try {
+        const userId = parseInt(c.req.param('id'), 10);
+        if (isNaN(userId)) return c.text("Invalid ID", 400);
+
+        const updatedUser = await c.req.json();
+        const message = await updateUserService(userId, updatedUser);
+        return c.json({ message }, 200);
+    } catch (error: any) {
+        console.error("Error updating user:", error);
+        return c.json({ error: error.message }, 400);
+    }
+};
+
+// Delete a user by ID
+export const deleteUserController = async (c: Context) => {
+    try {
+        const userId = parseInt(c.req.param('id'), 10);
+        if (isNaN(userId)) return c.text("Invalid ID", 400);
+
+        const currentUserRole = c.req.header('role'); // Assuming the role is passed in the header
+        if (currentUserRole !== 'admin') {
+            return c.json({ error: "Only admins can delete users" }, 403);
+        }
+        const message = await deleteUserService(userId, currentUserRole);
+        return c.json({ message }, 200);
+    } catch (error: any) {
+        console.error("Error deleting user:", error);
+        return c.json({ error: error.message }, 400);
+    }
+};

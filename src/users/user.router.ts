@@ -1,25 +1,35 @@
 import { Hono } from "hono";
-import {  getUser,getUsers, createUser, updateUser, deleteUser} from "./user.controller"
+import { createUserController, getUsersController, getUserByIdController, updateUserController, deleteUserController } from "./user.controller";
 import { zValidator } from "@hono/zod-validator";
 import { userSchema } from "../validators";
-import { adminOrUserRoleAuth, adminRoleAuth} from "../middleware/bearAuth";
-// import { adminRoleAuth } from "../middleware/bearAuth";
+import { adminRoleAuth } from "../middleware/bearAuth";
+
 export const userRouter = new Hono();
 
-//get all users
-userRouter.get("/users",getUsers );
+// Get all users
+userRouter.get("/users", getUsersController);
 
-//get a single user   
-userRouter.get("/users/:id" , getUser)
-// create a user 
-userRouter.post("/users", zValidator('json', userSchema, (result, c) => {
-    if (!result.success) {
-        return c.json(result.error, 400)
-    }
-}) ,createUser)
-//update a user
-userRouter.put("/users/:id",  updateUser)
+// Get a single user by ID
+userRouter.get("/users/:id", getUserByIdController);
 
-userRouter.delete("/users/:id", deleteUser)
-// search
-// userRouter.get("/users/search", searchUsers)
+// Create a new user (only admins)
+userRouter.post("/users", 
+    adminRoleAuth, // Middleware to check if the user is an admin
+    zValidator('json', userSchema, (result, c) => {
+        if (!result.success) {
+            return c.json(result.error, 400);
+        }
+    }), 
+    createUserController
+);
+
+// Update a user by ID
+userRouter.put("/users/:id", updateUserController);
+
+// Delete a user by ID (only admins)
+userRouter.delete("/users/:id", 
+    adminRoleAuth, // Middleware to check if the user is an admin
+    deleteUserController
+);
+
+

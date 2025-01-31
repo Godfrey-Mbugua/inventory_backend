@@ -29,3 +29,127 @@ Content-Type: application/json
 
 ### Delete a product by ID
 DELETE http://localhost:3000/products/1
+
+### Create a new user
+POST http://localhost:3000/authentication/register
+
+Content-Type: application/json
+
+
+{
+    "username": "admin",
+    "email": "newuser@example.com",
+    "password": "newuserpassword",
+    "role": "admin"
+}
+
+### login admin
+POST http://localhost:3000/authentication/login
+Content-Type: application/json
+
+
+{
+    
+    "email": "newuser@example.com",
+    "password": "newuserpassword"
+}
+
+
+
+
+### Admin creating a new user
+POST http://localhost:3000/authentication/register
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczODMyNTc2NSwiZXhwIjoxNzM4MzI5MzY1fQ.0o21DEtGeGtagu2abMvWIrqWIDA3Yvru-0IFK3Khs8E
+
+{
+    "username": "newuser2",
+    "email": "newuser2@example.com",
+    "password": "newuserpassword2",
+    "role": "user"
+}
+
+
+
+
+
+
+
+
+
+
+
+### Get all users
+GET http://localhost:3000/users
+
+### Get a user by ID
+GET http://localhost:3000/users/1
+
+### Update a user by ID
+PUT http://localhost:3000/users/1
+Content-Type: application/json
+Role: admin
+
+{
+    "username": "updateduser",
+    "email": "updateduser@example.com",
+    "password": "updateduserpassword",
+    "role": "admin"
+}
+
+### Delete a user by ID
+DELETE http://localhost:3000/users/1
+Role: admin
+
+### Register a new user
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "username": "newuser",
+    "email": "newuser@example.com",
+    "password": "newuserpassword",
+    "role": "user"
+}
+
+### Login a user
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "password": "newuserpassword"
+}
+
+### Verify a token
+GET http://localhost:3000/verify
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Create a new inventory record
+POST http://localhost:3000/inventory
+Content-Type: application/json
+
+{
+    "productid": 2,
+    "quantityAvailable": 100,
+    "reorderLevel": 20
+}
+
+### Get all inventory records
+GET http://localhost:3000/inventory
+
+### Get an inventory record by ID
+GET http://localhost:3000/inventory/1
+
+### Update an inventory record by ID
+PUT http://localhost:3000/inventory/1
+Content-Type: application/json
+
+{
+    "productid": 1,
+    "quantityAvailable": 150,
+    "reorderLevel": 30
+}
+
+### Delete an inventory record by ID
+DELETE http://localhost:3000/inventory/1
