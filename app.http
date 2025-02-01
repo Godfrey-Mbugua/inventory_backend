@@ -153,3 +153,90 @@ Content-Type: application/json
 
 ### Delete an inventory record by ID
 DELETE http://localhost:3000/inventory/1
+
+### Create a new order
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{
+    "userid": 1,
+    "productid": 2,
+    "quantityOrdered": 10,
+    "orderDate": "2023-10-01T00:00:00.000Z"
+}
+
+### Get all orders
+GET http://localhost:3000/orders
+
+### Get an order by ID
+GET http://localhost:3000/orders/1
+
+### Update an order by ID
+PUT http://localhost:3000/orders/1
+Content-Type: application/json
+
+{
+    "userid": 1,
+    "productid": 1,
+    "quantityOrdered": 15,
+    "orderDate": "2023-10-01T00:00:00.000Z"
+}
+
+### Delete an order by ID
+DELETE http://localhost:3000/orders/1
+
+### Create a new sale
+POST http://localhost:3000/sales
+Content-Type: application/json
+
+{
+    "orderid": 2,
+    "saleDate": "2023-10-01T00:00:00.000Z",
+    "totalAmount": 100.00
+}
+
+### Get all sales
+GET http://localhost:3000/sales
+
+### Get a sale by ID
+GET http://localhost:3000/sales/1
+
+### Update a sale by ID
+PUT http://localhost:3000/sales/1
+Content-Type: application/json
+
+{
+    "orderid": 1,
+    "saleDate": "2023-10-01T00:00:00.000Z",
+    "totalAmount": 150.00
+}
+
+### Delete a sale by ID
+DELETE http://localhost:3000/sales/1
+
+### Create a new supplier
+POST http://localhost:3000/suppliers
+Content-Type: application/json
+
+{
+    "name": "New Supplier",
+    "contactInfo": "Contact Info"
+}
+
+### Get all suppliers
+GET http://localhost:3000/suppliers
+
+### Get a supplier by ID
+GET http://localhost:3000/suppliers/1
+
+### Update a supplier by ID
+PUT http://localhost:3000/suppliers/1
+Content-Type: application/json
+
+{
+    "name": "Updated Supplier",
+    "contactInfo": "Updated Contact Info"
+}
+
+### Delete a supplier by ID
+DELETE http://localhost:3000/suppliers/1

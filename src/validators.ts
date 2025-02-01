@@ -41,7 +41,9 @@ export const orderSchema = z.object({
     userid: z.number().int().positive("User ID must be a positive integer"),
     productid: z.number().int().positive("Product ID must be a positive integer"),
     quantityOrdered: z.number().int().positive("Quantity ordered must be a positive integer"),
-    orderDate: z.date().default(new Date()),
+    orderDate: z.preprocess((arg) => {
+        if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
+    }, z.date())
 });
 
 // Suppliers schema
@@ -53,9 +55,12 @@ export const supplierSchema = z.object({
 // Sales schema
 export const saleSchema = z.object({
     orderid: z.number().int().positive("Order ID must be a positive integer"),
-    saleDate: z.date().default(new Date()),
+    saleDate: z.preprocess((arg) => {
+        if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
+    }, z.date()),
     totalAmount: z.number().positive("Total amount must be a positive number"),
 });
+
 
 // Predictions schema
 export const predictionSchema = z.object({
