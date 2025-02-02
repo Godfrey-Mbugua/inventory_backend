@@ -18,7 +18,7 @@ import { inventoryRouter } from './inventory/inventory.router'; // Import the in
 import { ordersRouter } from './orders/orders.router'; // Import the orders router
 import { salesRouter } from './sales/sales.router'; // Import the sales router
 import { suppliersRouter } from './suppliers/suppliers.router'; // Import the suppliers router
-
+import { predictionsRouter } from './predictions/predictions.router'; // Import the predictions router
 
 const app = new Hono();
 
@@ -72,6 +72,7 @@ app.route("/", inventoryRouter);   // Inventory
 app.route("/", ordersRouter);      // Orders
 app.route("/", salesRouter);       // Sales
 app.route("/", suppliersRouter);   // Suppliers
+app.route("/", predictionsRouter); // Predictions
 
 // Default route for unmatched paths
 app.all('*', (c) => {

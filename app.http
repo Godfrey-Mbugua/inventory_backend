@@ -240,3 +240,31 @@ Content-Type: application/json
 
 ### Delete a supplier by ID
 DELETE http://localhost:3000/suppliers/1
+
+### Create a new prediction
+POST http://localhost:3000/predictions
+Content-Type: application/json
+
+{
+    "productid": 2,
+    "predictedDemand": 100,
+    "predictionDate": "2023-10-01T00:00:00.000Z"
+}
+
+### Get all predictions
+GET http://localhost:3000/predictions
+
+### Get a prediction by ID
+GET http://localhost:3000/predictions/1
+
+### Update a prediction by ID
+PUT http://localhost:3000/predictions/1
+Content-Type: application/json
+{
+    "productid": 1,
+    "predictedDemand": 150,
+    "predictionDate": "2023-10-01T00:00:00.000Z"
+}
+
+### Delete a prediction by ID
+DELETE http://localhost:3000/predictions/1

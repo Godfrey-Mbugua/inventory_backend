@@ -66,5 +66,7 @@ export const saleSchema = z.object({
 export const predictionSchema = z.object({
     productid: z.number().int().positive("Product ID must be a positive integer"),
     predictedDemand: z.number().int().nonnegative("Predicted demand must be a non-negative integer"),
-    predictionDate: z.date().default(new Date()),
+    predictionDate: z.preprocess((arg) => {
+        if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
+    }, z.date()),
 });
