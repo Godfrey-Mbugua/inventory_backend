@@ -268,3 +268,10 @@ Content-Type: application/json
 
 ### Delete a prediction by ID
 DELETE http://localhost:3000/predictions/1
+
+
+
+
+
+
+https://inventory-backend-u8wv.onrender.com

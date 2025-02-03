@@ -21,7 +21,7 @@ export const sendWelcomeEmail = async (email: string, username: string): Promise
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Welcome to HANDS LIMITED',
+      subject: 'Welcome to INVENTORY',
       html: emailHtml
     };
 
@@ -29,26 +29,6 @@ export const sendWelcomeEmail = async (email: string, username: string): Promise
     console.log('Welcome email sent successfully to:', email);
   } catch (error) {
     console.error('Error sending welcome email:', error);
-    throw error;
-  }
-};
-
-export const sendTestimonialThanksEmail = async (email: string, username: string): Promise<void> => {
-  try {
-    const templatePath = path.join(__dirname, 'templates', 'testimonial-thanks.ejs');
-    const emailHtml = await ejs.renderFile(templatePath, { username });
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Thank You for Your Testimonial - HANDS LIMITED',
-      html: emailHtml
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log('Testimonial thank you email sent successfully to:', email);
-  } catch (error) {
-    console.error('Error sending testimonial thank you email:', error);
     throw error;
   }
 };
@@ -73,6 +53,33 @@ export const sendClientConfirmationEmail = async (email: string, firstname: stri
   }
 };
 
+export const sendLowStockEmail = async (adminEmail: string, productName: string, currentStock: number, reorderLevel: number) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: adminEmail,
+    subject: 'Low Stock Alert',
+    text: `Dear Admin,
+
+The stock for the product "${productName}" is running low.
+
+Current Stock: ${currentStock}
+Reorder Level: ${reorderLevel}
+
+Please take the necessary actions to restock the product.
+
+Best regards,
+Your Inventory Management System`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Low stock email sent successfully to:', adminEmail);
+  } catch (error) {
+    console.error('Error sending low stock email:', error);
+    throw error;
+  }
+};
+
 // Verify transporter configuration
 transporter.verify((error, success) => {
   if (error) {
@@ -81,3 +88,12 @@ transporter.verify((error, success) => {
     console.log('SMTP server connection successful');
   }
 });
+
+// Function to check stock levels and send alert if below minimum
+export const checkStockLevels = async (productName: string, currentStock: number, adminEmail: string) => {
+  const MINIMUM_STOCK_LEVEL = 10;
+
+  if (currentStock < MINIMUM_STOCK_LEVEL) {
+    await sendLowStockEmail(adminEmail, productName, currentStock, MINIMUM_STOCK_LEVEL);
+  }
+};
