@@ -11,8 +11,11 @@ if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in the environment variables");
 }
 
+// Define the role type
+type Role = 'admin' | 'manager' | 'cashier in' | 'cashier out';
+
 // Register a new user
-export const registerUserService = async (username: string, email: string, password: string, role: 'admin' | 'user'): Promise<string> => {
+export const registerUserService = async (username: string, email: string, password: string, role: Role): Promise<string> => {
     const hashedPassword = await hash(password, 10);
     await db.insert(UsersTable).values({
         username,
