@@ -1,8 +1,16 @@
 DO $$ BEGIN
- CREATE TYPE "public"."role" AS ENUM('admin', 'user');
+ CREATE TYPE "public"."role" AS ENUM('admin', 'user', 'manager', 'cashier in', 'cashier out');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "auth" (
+	"authid" serial PRIMARY KEY NOT NULL,
+	"user_id" integer,
+	"password" varchar(255) NOT NULL,
+	"role" "role",
+	"created_at" timestamp DEFAULT now()
+);
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "inventory" (
 	"inventoryid" serial PRIMARY KEY NOT NULL,
@@ -23,7 +31,8 @@ CREATE TABLE IF NOT EXISTS "predictions" (
 	"predictionid" serial PRIMARY KEY NOT NULL,
 	"productid" integer,
 	"predicted_demand" integer NOT NULL,
-	"prediction_date" timestamp DEFAULT now()
+	"prediction_date" timestamp DEFAULT now(),
+	"frequency" integer NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "products" (
@@ -58,6 +67,12 @@ CREATE TABLE IF NOT EXISTS "users" (
 	CONSTRAINT "users_username_unique" UNIQUE("username"),
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "auth" ADD CONSTRAINT "auth_user_id_users_userid_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("userid") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "inventory" ADD CONSTRAINT "inventory_productid_products_productid_fk" FOREIGN KEY ("productid") REFERENCES "public"."products"("productid") ON DELETE no action ON UPDATE no action;

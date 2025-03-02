@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1738229111898,
-      "tag": "0000_eminent_roughhouse",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1738319475315,
-      "tag": "0001_amusing_captain_marvel",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1740928935163,
-      "tag": "0002_cynical_thaddeus_ross",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1740930605108,
-      "tag": "0003_cheerful_dracula",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1740932755258,
-      "tag": "0004_ancient_secret_warriors",
+      "when": 1740933361296,
+      "tag": "0000_tearful_diamondback",
       "breakpoints": true
     }
   ]

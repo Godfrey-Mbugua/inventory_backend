@@ -18,7 +18,7 @@ export const registerUserSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    role: z.enum(["admin", "user"]).default("user"),
+    role: z.enum(["admin","manager","cashier in","cashier out", "user"]).default("user"),
 });
 
 // Products schema

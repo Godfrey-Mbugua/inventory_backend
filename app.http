@@ -275,3 +275,20 @@ DELETE http://localhost:3000/predictions/1
 
 
 https://inventory-backend-u8wv.onrender.com
+
+
+
+
+
+### Create a new user
+POST https://inventory-backend-u8wv.onrender.com/register
+
+Content-Type: application/json
+
+
+{
+    "username": "lester",
+    "email": "lester@example.com",
+    "password": "newuserpassword",
+    "role": "manager"
+}

@@ -1,9 +1,65 @@
 {
-  "id": "68747b6e-2cff-409f-b2cd-db35b074145e",
+  "id": "4005aed3-7e27-45af-a7a8-d767864459d4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.auth": {
+      "name": "auth",
+      "schema": "",
+      "columns": {
+        "authid": {
+          "name": "authid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "auth_user_id_users_userid_fk": {
+          "name": "auth_user_id_users_userid_fk",
+          "tableFrom": "auth",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "userid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.inventory": {
       "name": "inventory",
       "schema": "",
@@ -148,6 +204,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "frequency": {
+          "name": "frequency",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -363,7 +425,10 @@
       "schema": "public",
       "values": [
         "admin",
-        "user"
+        "user",
+        "manager",
+        "cashier in",
+        "cashier out"
       ]
     }
   },
