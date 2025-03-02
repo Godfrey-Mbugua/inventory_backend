@@ -15,6 +15,13 @@
       "when": 1738319475315,
       "tag": "0001_amusing_captain_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740928935163,
+      "tag": "0002_cynical_thaddeus_ross",
+      "breakpoints": true
     }
   ]
 }

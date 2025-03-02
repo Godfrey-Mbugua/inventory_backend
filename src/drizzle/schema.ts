@@ -2,7 +2,7 @@ import { pgTable, serial, varchar, timestamp, integer, boolean, pgEnum } from "d
 import { One, Many, relations } from "drizzle-orm";
 
 // Role Enum
-export const roleEnum = pgEnum("role", ["admin", "user"]);
+export const roleEnum = pgEnum("role", ["manager", "cashier in","cashier out"]);
 
 // Users Table
 export const UsersTable = pgTable('users', {
@@ -20,7 +20,7 @@ export const AuthTable = pgTable('auth', {
   authid: serial('authid').primaryKey(),
   userid: integer('user_id').references(() => UsersTable.userid, { onDelete: "cascade" }),
   password: varchar('password', { length: 255 }).notNull(),
-  role: roleEnum('role').default('user'),
+  role: roleEnum('role'),
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -72,7 +72,10 @@ export const PredictionsTable = pgTable('predictions', {
   productid: integer('productid').references(() => ProductsTable.productid),
   predictedDemand: integer('predicted_demand').notNull(),
   predictionDate: timestamp('prediction_date').defaultNow(),
+  frequency: integer('frequency').notNull(), // Add this column
 });
+
+
 
 // Relationships
 export const UsersRelations = relations(UsersTable, ({ many }) => ({

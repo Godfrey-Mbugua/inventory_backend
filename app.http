@@ -40,7 +40,7 @@ Content-Type: application/json
     "username": "admin",
     "email": "newuser@example.com",
     "password": "newuserpassword",
-    "role": "admin"
+    "role": ""
 }
 
 ### login admin
@@ -126,7 +126,7 @@ GET http://localhost:3000/verify
 Authorization: Bearer YOUR_JWT_TOKEN_HERE
 
 ### Create a new inventory record
-POST http://localhost:3000/inventory
+POST https://inventory-backend-u8wv.onrender.com/inventory
 Content-Type: application/json
 
 {
