@@ -2,7 +2,7 @@ import { pgTable, serial, varchar, timestamp, integer, boolean, pgEnum } from "d
 import { One, Many, relations } from "drizzle-orm";
 
 // Role Enum
-export const roleEnum = pgEnum("role", ["admin","manager", "cashier in","cashier out"]);
+export const roleEnum = pgEnum("role", ["admin","user","manager", "cashier in","cashier out"]);
 
 // Users Table
 export const UsersTable = pgTable('users', {

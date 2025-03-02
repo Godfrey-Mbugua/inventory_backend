@@ -12,7 +12,7 @@ if (!JWT_SECRET) {
 }
 
 // Define the role type
-type Role = 'admin' | 'manager' | 'cashier in' | 'cashier out';
+export type Role = 'admin' |'user' | 'manager' | 'cashier in' | 'cashier out';
 
 // Register a new user
 export const registerUserService = async (username: string, email: string, password: string, role: Role): Promise<string> => {

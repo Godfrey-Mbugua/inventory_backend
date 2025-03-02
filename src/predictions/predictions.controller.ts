@@ -2,6 +2,24 @@ import { Context } from 'hono';
 import { createPredictionService, getPredictionsService, getPredictionByIdService, updatePredictionService, deletePredictionService } from './predictions.services'
 import { predictionSchema } from '../validators';
 
+
+
+
+//createpredictions
+export const createPredictionController = async (c: Context) => {
+    try {
+        const result = predictionSchema.safeParse(await c.req.json());
+        if (!result.success) {
+            return c.json(result.error, 400);
+        }
+        const message = await createPredictionService({ ...result.data, frequency: 1 });
+        return c.json({ message }, 201);
+    } catch (error: any) {
+        console.error("Error creating prediction:", error);
+        return c.json({ error: error.message }, 400);
+    }
+};
+
 // Get all predictions
 export const getPredictionsController = async (c: Context) => {
     try {

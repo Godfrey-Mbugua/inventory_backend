@@ -2,6 +2,8 @@ import { Context } from 'hono';
 import { registerUserService, loginUserService, verifyTokenService } from './auth.service';
 import { loginUserSchema, registerUserSchema } from '../validators';
 
+import { Role } from './auth.service'; // Import the Role type
+
 // Register a new user
 export const registerUserController = async (c: Context) => {
     try {
@@ -10,7 +12,7 @@ export const registerUserController = async (c: Context) => {
             return c.json(result.error, 400);
         }
 
-        const { username, email, password, role } = result.data;
+        const { username, email, password, role } = result.data as { username: string; email: string; password: string; role: Role };
         const message = await registerUserService(username, email, password, role);
         return c.json({ message }, 201);
     } catch (error: any) {
