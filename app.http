@@ -37,10 +37,10 @@ Content-Type: application/json
 
 
 {
-    "username": "admin",
-    "email": "newuser@example.com",
+    "username": "lester",
+    "email": "lester@example.com",
     "password": "newuserpassword",
-    "role": ""
+    "role": "manager"
 }
 
 ### login admin
