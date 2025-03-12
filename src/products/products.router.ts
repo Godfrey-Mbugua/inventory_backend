@@ -1,25 +1,10 @@
-import { Hono } from "hono";
-import { createProductController, getProductsController, updateProductController, deleteProductController } from "./products.controller";
-import { zValidator } from "@hono/zod-validator";
-import { productSchema } from "../validators";
-import { adminRoleAuth } from "../middleware/bearAuth";
+import { Hono } from 'hono';
+import { createProductController, getProductsController, updateProductController, deleteProductController } from './products.controller';
+import { cashierInGuard, cashierOutGuard } from '../middleware/auth.middleware';
 
-export const productRouter = new Hono();
+export const productsRouter = new Hono();
 
-// Create a new product
-productRouter.post("/products", 
-    zValidator('json', productSchema),
-    createProductController
-);
-
-// Get all products
-productRouter.get("/products", getProductsController);
-
-// Update a product by ID
-productRouter.put("/products/:id", 
-    zValidator('json', productSchema),
-    updateProductController
-);
-
-// Delete a product by ID
-productRouter.delete("/products/:id", deleteProductController);
+productsRouter.post('/products', cashierInGuard, createProductController);
+productsRouter.get('/products', cashierOutGuard, getProductsController);
+productsRouter.put('/products/:id', cashierInGuard, updateProductController);
+productsRouter.delete('/products/:id', cashierInGuard, deleteProductController);

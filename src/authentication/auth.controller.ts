@@ -1,8 +1,12 @@
 import { Context } from 'hono';
 import { registerUserService, loginUserService, verifyTokenService } from './auth.service';
 import { loginUserSchema, registerUserSchema } from '../validators';
-
 import { Role } from './auth.service'; // Import the Role type
+import { verify, JwtPayload } from "jsonwebtoken";
+import db from '../drizzle/db';
+import { eq } from 'drizzle-orm';
+
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 // Register a new user
 export const registerUserController = async (c: Context) => {
@@ -13,6 +17,59 @@ export const registerUserController = async (c: Context) => {
         }
 
         const { username, email, password, role } = result.data as { username: string; email: string; password: string; role: Role };
+
+        // Check if the role is manager and if the requester is an admin
+        if (role === 'manager') {
+            const authHeader = c.req.header("Authorization");
+            if (!authHeader) {
+                return c.json({ error: "Authorization header is missing" }, 401);
+            }
+
+            const token = authHeader.split(" ")[1];
+            if (!token) {
+                return c.json({ error: "Authorization token is missing" }, 401);
+            }
+
+            const decoded = verify(token, JWT_SECRET) as unknown as { userId: number; role: string };
+
+            const user = await db.query.UsersTable.findFirst({
+                where: (users) => eq(users.userid, decoded.userId),
+                columns: {
+                    role: true
+                }
+            });
+
+            if (!user || user.role !== 'admin') {
+                return c.json({ error: "Only admins can create manager roles" }, 403);
+            }
+        }
+
+        // Check if the role is cashier in or cashier out and if the requester is an admin or manager
+        if (role === 'cashier in' || role === 'cashier out') {
+            const authHeader = c.req.header("Authorization");
+            if (!authHeader) {
+                return c.json({ error: "Authorization header is missing" }, 401);
+            }
+
+            const token = authHeader.split(" ")[1];
+            if (!token) {
+                return c.json({ error: "Authorization token is missing" }, 401);
+            }
+
+            const decoded = verify(token, JWT_SECRET) as unknown as { userId: number; role: string };
+
+            const user = await db.query.UsersTable.findFirst({
+                where: (users) => eq(users.userid, decoded.userId),
+                columns: {
+                    role: true
+                }
+            });
+
+            if (!user || (user.role !== 'admin' && user.role !== 'manager')) {
+                return c.json({ error: "Only admins or managers can create cashier in and cashier out roles" }, 403);
+            }
+        }
+
         const message = await registerUserService(username, email, password, role);
         return c.json({ message }, 201);
     } catch (error: any) {

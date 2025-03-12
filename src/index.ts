@@ -13,7 +13,7 @@ import { client } from './drizzle/db';  // Import the client
 
 import { userRouter } from './users/user.router';
 import { authRouter } from './authentication/auth.router';
-import { productRouter } from './products/products.router';
+import { productsRouter } from './products/products.router';
 import { inventoryRouter } from './inventory/inventory.router'; // Import the inventory router
 import { ordersRouter } from './orders/orders.router'; // Import the orders router
 import { salesRouter } from './sales/sales.router'; // Import the sales router
@@ -67,7 +67,7 @@ app.route("/", userRouter);        // User management
 app.route("/authentication", authRouter);
 //app.route("/", clientRouter);      // Posible clients
 //app.route("/", serviceRouter);     // Offered services
-app.route("/", productRouter);     // Products
+app.route("/", productsRouter);     // Products
 app.route("/", inventoryRouter);   // Inventory
 app.route("/", ordersRouter);      // Orders
 app.route("/", salesRouter);       // Sales

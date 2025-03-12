@@ -281,14 +281,165 @@ https://inventory-backend-u8wv.onrender.com
 
 
 ### Create a new user
-POST https://inventory-backend-u8wv.onrender.com/register
-
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
 Content-Type: application/json
-
 
 {
     "username": "lester",
     "email": "lester@example.com",
     "password": "newuserpassword",
     "role": "manager"
+}
+
+### Create a new supplier
+POST https://inventory-backend-u8wv.onrender.com/suppliers
+Content-Type: application/json
+
+{
+    "name": "New Supplier",
+    "contactInfo": "Contact Info"
+}
+
+### Register a new user
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+
+{
+    "username": "shaq",
+    "email": "newuser2@example.com",
+    "password": "newuserpassword1",
+    "role": "cashier in"
+}
+
+### Admin login
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "adminpassword"
+}
+
+### Create a new user (admin creating cashier in)
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN_HERE
+
+{
+    "username": "shaq",
+    "email": "newuser2@example.com",
+    "password": "newuserpassword1",
+    "role": "cashier in"
+}
+
+### Create a new user (admin creating cashier out)
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN_HERE
+
+{
+    "username": "john",
+    "email": "newuser3@example.com",
+    "password": "newuserpassword2",
+    "role": "cashier out"
+}
+{
+    "username": "shaq",
+    "email": "newuser2@example.com",
+    "password": "newuserpassword1",
+    "role": "cashier in"
+}
+
+### Create a new user (admin creating cashier out)
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN_HERE
+
+{
+    "username": "john",
+    "email": "newuser3@example.com",
+    "password": "newuserpassword2",
+    "role": "cashier out"
+}
+
+### Create an admin user
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "adminpassword",
+    "role": "admin"
+}
+
+### Admin login
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "adminpassword"
+}
+
+### Create a new user (admin creating cashier in)
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTE3MTI1NiwiZXhwIjoxNzQxMTc0ODU2fQ.ALopcnPokAJ3knDCjHRqhXi4zUXgad0zp0jbmCgSpxc
+
+{
+    "username": "ray",
+    "email": "newuser3@example.com",
+    "password": "newuserpassword1",
+    "role": "cashier in"
+}
+
+### Create a new user (admin creating cashier out)
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTE3MTI1NiwiZXhwIjoxNzQxMTc0ODU2fQ.ALopcnPokAJ3knDCjHRqhXi4zUXgad0zp0jbmCgSpxc
+
+{
+    "username": "alex",
+    "email": "newuser4@example.com",
+    "password": "newuserpassword3",
+    "role": "cashier out"
+}
+
+
+#include "stm32f4xx.h"
+
+  
+#include <stdint.h>  // Ensure correct integer types
+
+#define LED_PIN 5  
+
+void SysTick_Init(void);  
+void LED_Init(void);
+void SysTick_Handler(void);
+
+volatile uint32_t tick = 0;
+
+int main(void) {
+    LED_Init();
+    SysTick_Init();
+    
+    while (1) {
+        // Main loop - The LED toggling happens in the ISR
+    }
+}
+
+void LED_Init(void) {
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;  
+    GPIOA->MODER &= ~(3 << (LED_PIN * 2)); 
+    GPIOA->MODER |= (1 << (LED_PIN * 2));  
+}
+
+void SysTick_Init(void) {
+    SysTick_Config(SystemCoreClock / 1000); // Use system clock for 1ms
+}
+
+void SysTick_Handler(void) {
+    tick++;
+    GPIOA->ODR ^= (1 << LED_PIN); 
 }

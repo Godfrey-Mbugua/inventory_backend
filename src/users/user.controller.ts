@@ -5,11 +5,7 @@ import { createUserService, getUsersService, getUserByIdService, updateUserServi
 export const createUserController = async (c: Context) => {
     try {
         const user = await c.req.json();
-        const currentUserRole = c.req.header('role'); // Assuming the role is passed in the header
-        if (currentUserRole !== 'admin') {
-            return c.json({ error: "Only admins can create new users" }, 403);
-        }
-        const message = await createUserService(user, currentUserRole);
+        const message = await createUserService(user);
         return c.json({ message }, 201);
     } catch (error: any) {
         console.error("Error creating user:", error);
@@ -24,33 +20,29 @@ export const getUsersController = async (c: Context) => {
         return c.json(users, 200);
     } catch (error: any) {
         console.error("Error getting users:", error);
-        return c.json({ error: error.message }, 500);
+        return c.json({ error: error.message }, 400);
     }
 };
 
 // Get a user by ID
 export const getUserByIdController = async (c: Context) => {
     try {
-        const userId = parseInt(c.req.param('id'), 10);
-        if (isNaN(userId)) return c.text("Invalid ID", 400);
-
+        const userId = parseInt(c.req.param('id'));
         const user = await getUserByIdService(userId);
         if (!user) {
-            return c.text("User not found", 404);
+            return c.json({ error: "User not found" }, 404);
         }
         return c.json(user, 200);
     } catch (error: any) {
-        console.error("Error getting user:", error);
-        return c.json({ error: error.message }, 500);
+        console.error("Error getting user by ID:", error);
+        return c.json({ error: error.message }, 400);
     }
 };
 
 // Update a user by ID
 export const updateUserController = async (c: Context) => {
     try {
-        const userId = parseInt(c.req.param('id'), 10);
-        if (isNaN(userId)) return c.text("Invalid ID", 400);
-
+        const userId = parseInt(c.req.param('id'));
         const updatedUser = await c.req.json();
         const message = await updateUserService(userId, updatedUser);
         return c.json({ message }, 200);
@@ -63,14 +55,8 @@ export const updateUserController = async (c: Context) => {
 // Delete a user by ID
 export const deleteUserController = async (c: Context) => {
     try {
-        const userId = parseInt(c.req.param('id'), 10);
-        if (isNaN(userId)) return c.text("Invalid ID", 400);
-
-        const currentUserRole = c.req.header('role'); // Assuming the role is passed in the header
-        if (currentUserRole !== 'admin') {
-            return c.json({ error: "Only admins can delete users" }, 403);
-        }
-        const message = await deleteUserService(userId, currentUserRole);
+        const userId = parseInt(c.req.param('id'));
+        const message = await deleteUserService(userId);
         return c.json({ message }, 200);
     } catch (error: any) {
         console.error("Error deleting user:", error);

@@ -1,32 +1,49 @@
 import { Context, Next } from "hono";
-import { AuthTable, UsersTable } from "../drizzle/schema";
+import { UsersTable } from "../drizzle/schema";
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
+import { verify } from "jsonwebtoken";
 
-export const adminGuard = async (c: Context, next: Next) => {
-  const authHeader = c.req.header("Authorization");
-  if (!authHeader) {
-    return c.json({ error: "No authorization header" }, 401);
-  }
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
-  // Get token from header
-  const token = authHeader.split(" ")[1];
-  
-  // Verify admin role using the correct schema
-  const auth = await db.query.AuthTable.findFirst({
-    where: (auth, { eq }) => eq(auth.userid, 
-      db.select({ userid: UsersTable.userid })
-        .from(UsersTable)
-        .where(eq(UsersTable.email, token))
-    ),
-    columns: {
-      role: true
-    }
-  });
+if (!JWT_SECRET) {
+    throw new Error("JWT_SECRET is not defined in the environment variables");
+}
 
-  if (!auth || auth.role !== "admin") {
-    return c.json({ error: "Unauthorized" }, 403);
-  }
+const roleGuard = (allowedRoles: string[]) => {
+    return async (c: Context, next: Next) => {
+        const authHeader = c.req.header("Authorization");
+        if (!authHeader) {
+            return c.json({ error: "No authorization header" }, 401);
+        }
 
-  await next();
-}; 
+        // Get token from header
+        const token = authHeader.split(" ")[1];
+
+        try {
+            // Verify token
+            const decoded = verify(token, JWT_SECRET) as { userId: number; role: string };
+
+            // Verify role using the correct schema
+            const user = await db.query.UsersTable.findFirst({
+                where: (users) => eq(users.userid, decoded.userId),
+                columns: {
+                    role: true
+                }
+            });
+
+            if (!user || !allowedRoles.includes(user.role)) {
+                return c.json({ error: "Unauthorized" }, 403);
+            }
+
+            await next();
+        } catch (error) {
+            return c.json({ error: "Invalid token" }, 401);
+        }
+    };
+};
+
+export const adminGuard = roleGuard(['admin']);
+export const managerGuard = roleGuard(['admin', 'manager']);
+export const cashierInGuard = roleGuard(['admin', 'manager', 'cashier in']);
+export const cashierOutGuard = roleGuard(['admin', 'manager', 'cashier out']);
