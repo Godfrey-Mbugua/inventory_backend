@@ -43,7 +43,8 @@ const roleGuard = (allowedRoles: string[]) => {
     };
 };
 
+// Update guards with new role permissions
 export const adminGuard = roleGuard(['admin']);
 export const managerGuard = roleGuard(['admin', 'manager']);
-export const cashierInGuard = roleGuard(['admin', 'manager', 'cashier in']);
-export const cashierOutGuard = roleGuard(['admin', 'manager', 'cashier out']);
+export const cashierInGuard = roleGuard(['cashier in']); // Modified to only allow cashier in
+export const cashierOutGuard = roleGuard(['cashier out']); // Modified to only allow cashier out

@@ -443,3 +443,342 @@ void SysTick_Handler(void) {
     tick++;
     GPIOA->ODR ^= (1 << LED_PIN); 
 }
+### Create admin user (if not exists)
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+
+{
+    "username": "admin1",
+    "email": "admin123@example.com",
+    "password": "adminpassword1",
+    "role": "admin"
+}
+
+### Admin login
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "admin123@example.com",
+    "password": "adminpassword1"
+}
+
+### Admin creating a manager
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDE3NzU5NjcsImV4cCI6MTc0MTc3OTU2N30.aORLVzjDmVVJrDdLK1Jbip5eLzzunNfqm7Fm7LQhwYw
+
+{
+    "username": "manager1",
+    "email": "manager1@example.com",
+    "password": "managerpass",
+    "role": "manager"
+}
+
+### Manager login
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "manager1@example.com",
+    "password": "managerpass"
+}
+
+### Manager creating a cashier in
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJyb2xlIjoibWFuYWdlciIsImlhdCI6MTc0MTc3NzI0MSwiZXhwIjoxNzQxNzgwODQxfQ.kjyo8LQusPPz6_tXxQYUJFWxJNx9VaWa7tob0PYvUgk
+
+{
+    "username": "cashierin1",
+    "email": "cashierin1@example.com",
+    "password": "cashierpass",
+    "role": "cashier in"
+}
+
+### Manager creating a cashier out
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJyb2xlIjoibWFuYWdlciIsImlhdCI6MTc0MTc3NzI0MSwiZXhwIjoxNzQxNzgwODQxfQ.kjyo8LQusPPz6_tXxQYUJFWxJNx9VaWa7tob0PYvUgk
+
+
+{
+    "username": "cashierout1",
+    "email": "cashierout1@example.com",
+    "password": "cashierpass",
+    "role": "cashier out"
+}
+
+### Cashier In Login
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "cashierin1@example.com",
+    "password": "cashierpass"
+}
+
+### Cashier Out Login
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "cashierout1@example.com",
+    "password": "cashierpass"
+}
+
+### Test Cashier In Access (with token from login)
+GET https://inventory-backend-u8wv.onrender.com/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+### Test Cashier Out Access (with token from login)
+GET https://inventory-backend-u8wv.onrender.com/sales
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+Product Management Flow
+
+### Create new product (using cashier in token)
+POST https://inventory-backend-u8wv.onrender.com/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+{
+    "name": "boots",
+    "description": "soccer boots",
+    "price": 1400,
+    "quantityInStock": 70
+}
+
+### Get all products (cashier in only)
+GET https://inventory-backend-u8wv.onrender.com/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+### Update product (cashier in only)
+PUT https://inventory-backend-u8wv.onrender.com/products/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+{
+    "name": "Updated Skates",
+    "description": "4 wheels double lane",
+    "price": 150,
+    "quantityInStock": 75
+}
+
+### Delete product (cashier in only)
+DELETE https://inventory-backend-u8wv.onrender.com/products/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+### 5. Inventory Management Flow
+### Create inventory record
+POST https://inventory-backend-u8wv.onrender.com/inventory
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+{
+    "productid": 2,
+    "quantityAvailable": 70,
+    "reorderLevel": 5
+}
+
+### Get all inventory
+GET https://inventory-backend-u8wv.onrender.com/inventory
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+### 1. First create a new product (using cashier in token)
+POST https://inventory-backend-u8wv.onrender.com/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+{
+    "name": "Test Product",
+    "description": "Test Description",
+    "price": 1000,
+    "quantityInStock": 50
+}
+###First get all inventory to see existing records
+GET https://inventory-backend-u8wv.onrender.com/inventory
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+
+### 2. Create inventory record for the new product
+POST https://inventory-backend-u8wv.onrender.com/inventory
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+{
+    "productid": 2,
+    "quantityAvailable": 70,
+    "reorderLevel": 10
+}
+
+### 3. Get all inventory to verify creation
+GET https://inventory-backend-u8wv.onrender.com/inventory
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+### Update inventory with correct ID (use ID from GET response)
+PUT https://inventory-backend-u8wv.onrender.com/inventory/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+{
+    "productid": 3,
+    "quantityAvailable": 50,
+    "reorderLevel": 10
+}
+
+### 4. Update inventory with correct ID
+PUT https://inventory-backend-u8wv.onrender.com/inventory/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJyb2xlIjoiY2FzaGllciBvdXQiLCJpYXQiOjE3NDE3Nzk4NjUsImV4cCI6MTc0MTc4MzQ2NX0.7UXUTWAEVKkieoOY2KtLBhzUvar_FFFWikETQTjtNnc
+
+{
+    "productid": 5,
+    "quantityAvailable": 50,
+    "reorderLevel": 10
+}
+
+### 6. Order Management Flow
+### Create order
+POST https://inventory-backend-u8wv.onrender.com/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+
+{
+    "userid": 1,
+    "productid": 1,
+    "quantityOrdered": 5,
+    "orderDate": "2024-03-05T10:00:00.000Z"
+}
+
+### Get all orders
+GET https://inventory-backend-u8wv.onrender.com/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTc3ODQ1MCwiZXhwIjoxNzQxNzgyMDUwfQ.kxVEE0jiww_b9W0duzqCf4fxR-jS0JKJqsK6rAbUH2Q
+
+### 7. Sales Management Flow
+### Create sale
+POST https://inventory-backend-u8wv.onrender.com/sales
+Content-Type: application/json
+Authorization: Bearer {{cashierOutToken}}
+
+{
+    "orderid": 1,
+    "totalAmount": 500,
+    "saleDate": "2024-03-05T10:30:00.000Z"
+}
+
+### Get all sales
+GET https://inventory-backend-u8wv.onrender.com/sales
+Authorization: Bearer {{cashierOutToken}}
+
+### 8. Supplier Management Flow
+### Create supplier
+POST https://inventory-backend-u8wv.onrender.com/suppliers
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg2MzI3NSwiZXhwIjoxNzQxODY2ODc1fQ.DnVKnow571dwDmdWPsX8jrwndRlBZw9uSiixzYetFeQ
+
+{
+    "name": "Test Supplier2",
+    "contactInfo": "supplier2@test.com"
+}
+
+### Get all suppliers
+GET https://inventory-backend-u8wv.onrender.com/suppliers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg2MzI3NSwiZXhwIjoxNzQxODY2ODc1fQ.DnVKnow571dwDmdWPsX8jrwndRlBZw9uSiixzYetFeQ
+
+### 9. Error Cases Testing
+### Try to create manager with cashier token
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg2MzI3NSwiZXhwIjoxNzQxODY2ODc1fQ.DnVKnow571dwDmdWPsX8jrwndRlBZw9uSiixzYetFeQ
+{
+    "username": "manager2",
+    "email": "manager2@example.com",
+    "password": "managerpass",
+    "role": "manager"
+}
+
+### Try to create cashier with wrong role
+POST https://inventory-backend-u8wv.onrender.com/authentication/register
+Content-Type: application/json
+Authorization: Bearer {{managerToken}}
+
+{
+    "username": "invalidcashier",
+    "email": "invalid@example.com",
+    "password": "cashierpass",
+    "role": "invalid_role"
+}
+
+### Try to access without token
+GET https://inventory-backend-u8wv.onrender.com/products
+
+### Try to access with expired token
+GET https://inventory-backend-u8wv.onrender.com/products
+Authorization: Bearer expired.token.here
+### 1. Login as Cashier In to get fresh token
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "cashierin1@example.com",
+    "password": "cashierpass"
+}
+
+### 2. Use the new token from the login response above
+GET https://inventory-backend-u8wv.onrender.com/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg1NzEwNCwiZXhwIjoxNzQxODYwNzA0fQ.EhpzedLm_MLN46UF40Y7KPBi3FfTbJt5qQ7lkUpYeyw
+
+### 3. Create new product with the fresh token
+POST https://inventory-backend-u8wv.onrender.com/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg1NzEwNCwiZXhwIjoxNzQxODYwNzA0fQ.EhpzedLm_MLN46UF40Y7KPBi3FfTbJt5qQ7lkUpYeyw
+
+{
+    "name": "bicycles",
+    "description": "mountain bikes",
+    "price": 1000,
+    "quantityInStock": 50
+}
+### 6. Order Management Flow (using fresh cashier in token)
+### 1. First login as Cashier In to get fresh token
+POST https://inventory-backend-u8wv.onrender.com/authentication/login
+Content-Type: application/json
+
+{
+    "email": "cashierin1@example.com",
+    "password": "cashierpass"
+}
+
+### 2. Create order with fresh token (Copy the token from login response above)
+POST https://inventory-backend-u8wv.onrender.com/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTkzNzU1MSwiZXhwIjoxNzQxOTQxMTUxfQ.MszhKuhfl7lIBFBJm71VSQ7SN_gsxPvQYWAaxkUfBDgE
+
+{
+    "userid": 15,
+    "productid": 6,
+    "quantityOrdered": 5,
+    "orderDate": "2024-03-14T10:00:00.000Z"
+}
+### Get order by ID
+GET https://inventory-backend-u8wv.onrender.com/orders/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTkzNzU1MSwiZXhwIjoxNzQxOTQxMTUxfQ.MszhKuhfl7lIBFBJm71VSQ7SN_gsxPvQYWAaxkUfBDg
+### Update order
+PUT https://inventory-backend-u8wv.onrender.com/orders/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg2MzcxMCwiZXhwIjoxNzQxODY3MzEwfQ.Zow7bCSuwC0CG7EmFEPo1Fg2n1vq1gt9Mk8l351SV98
+
+{
+    "userid": 15,
+    "productid": 2,
+    "quantityOrdered": 5,
+    "orderDate": "2024-03-13T11:00:00.000Z"
+}
+
+### Delete order
+DELETE https://inventory-backend-u8wv.onrender.com/orders/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJyb2xlIjoiY2FzaGllciBpbiIsImlhdCI6MTc0MTg2MzcxMCwiZXhwIjoxNzQxODY3MzEwfQ.Zow7bCSuwC0CG7EmFEPo1Fg2n1vq1gt9Mk8l351SV98
